@@ -1,5 +1,10 @@
-#ifndef UNTITLED_SPEEDSHIP_H
-#define UNTITLED_SPEEDSHIP_H
+#ifndef SPEED_SHIP_H
+#define SPEED_SHIP_H
 #include "spaceships.h"
+class speedShip:public Spaceships {
+public:
+    speedShip(): Spaceships(0.5){}
 
-#endif //UNTITLED_SPEEDSHIP_H
+};
+
+#endif //SPEED_SHIP_H

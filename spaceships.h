@@ -1,30 +1,35 @@
 #ifndef COSMIC_VOYAGER_CAPTAIN_H
 #define COSMIC_VOYAGER_CAPTAIN_H
-#include "Spaceships.h"
+#include "spaceships.h"
+#include <random>
+#include <iostream>
 
 class Spaceships {
 public:
     explicit Spaceships(double _damageCoef) : damageCoef{_damageCoef} {}
 
-    virtual int updateHealthDamage10(int& _health)=0;
-    virtual int updateHealthDamage30(int&  _health)=0;
+    //UPDATES
+    int GetDemage(int demage_);
 
-    int earnMoney(int _money);
-    int loseMoney(int _money);
-    int updateFuel(int& _fuel);
+    void earnMoney(int prize_);
+    void loseMoney(void);
+    void updateFuel(void);
 
-    virtual void asteroid()=0;
-    void abandonedPlanet();
-    void pirates();
+    //EVENTS
+    void asteroid(void);
 
-    virtual void run()=0;
-    virtual void fight()=0;
+    void abandonedPlanet(void);
+    void pirates(void);
 
-    void debate();
+    //ACTIONS
+    void run(void);
 
-    void displayStatus() const;
+    void fight(void);
+    void debate(void);
 
-    void puan_hesabi();
+    void displayStatus(void) const;
+
+    void puan_hesabi(void);
     int fuel{100};
 
 protected:
@@ -35,7 +40,7 @@ protected:
 
     //CONSTANTS
     const int prize{10};
-    const int spentFuel{33};
+    const int spentFuel{1};
     const int damage{10};
     const int damage_{30};
 };
