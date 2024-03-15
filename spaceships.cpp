@@ -1,50 +1,55 @@
+
 #include <iostream>
 #include "spaceships.h"
-#include "commonship.h"
-#include "strongship.h"
-#include "speedship.h"
-#include <cstdlib>
 
 //çözülecek sorunlar:
-//destructorlar yapılacak
+//destructorlar yapılacak()
 //single responsibility bakılabilir
 //declaration ve definitionları ayırcaz
 //gecersiz gemi seciminde secim fonksiyonunu tekrar cağır
 
-class Spaceships {
-public:
-    explicit Spaceships(double _damageCoef) : damageCoef{_damageCoef} {}
-
     //UPDATES
-    virtual int updateHealthDamage10(int &_health) = 0;
-
-    virtual int updateHealthDamage30(int &_health) = 0;
-
-    int earnMoney(int _money) {
-        money += prize;
-        return money;
+    int Spaceships::GetDemage(int demage_) {
+        health -= demage_*damageCoef;
+        int health_after_demage = (health > 0) ? health : 0;
+        return health;
     }
 
-    int loseMoney(int _money) {
+    void Spaceships::earnMoney(int prize_) {
+        money += prize_;
+    }
+
+    void Spaceships::loseMoney(void) {
         int moneyLoss = (rand() % 3 + 1);
         moneyLoss = moneyLoss * 10;
-        return money -= moneyLoss;
+        }
 
+    void Spaceships::updateFuel(void) {
+        fuel -= spentFuel;
     }
 
-    int updateFuel(int &_fuel) {
-        if (fuel >= 34) {
-            fuel -= spentFuel;
-            return fuel;
-        } else {
-            fuel = 0;
+    void Spaceships::asteroid(void) {
+        int asteroidDamage = (rand() % 4) == 0&1&2 ? 10: 0;
+        std::cout<<"\nAsteroid kuşağından geçiyorsun!\n\n";
+        std::cout<<"                      .:'\n"
+                   "         ....     _.::'\n"
+                   "       .:-\"\"-:.  (_.'\n"
+                   "     .:/      \\:.\n"
+                   "     :|        |:\n"
+                   "     ':\\      /:'\n"
+                   "      '::-..-::'\n"
+                   "        `''''`";
+        if(asteroidDamage>0) {
+            GetDemage(5);
+            std::cout<<"\nAsteroidlerden birine çarpıp "<<asteroidDamage<<" hasar aldın.\n\n";
+        }
+        else {
+            std::cout<<"\nAsteroid kuşağından hasar almadan geçtin. Yakıtın azaldı.\n";
+            updateFuel();
         }
     }
 
-    //EVENTS
-    virtual void asteroid() = 0;
-
-    void abandonedPlanet() {
+    void Spaceships::abandonedPlanet(void) {
         int oran = (rand() % 2) == 0 ? 10 : 0;
         if (oran > 0) {
             std::cout << "⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
@@ -62,16 +67,15 @@ public:
                          "⠀⠣⣩⠘⠀⠀⠀⠈⠙⣿⡏⠁⠀⢀⠠⢁⡂⢉⠎⠀\n"
                          "⠀⠀⠈⠓⠬⢀⣀⠀⠀⠈⠀⠀⠀⢐⣬⠴⠒⠁⠀⠀\n"
                          "⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀";
-            std::cout << "\nTerk edilmiş bir gezegende yerde 10 altın buldun! Şanslı günündesin!\n\n";
+            std::cout << "\nTerk edilmiş bir gezegende yerde "<<money<< " altın buldun! Şanslı günündesin!\n\n";
             earnMoney(money); //!!!!!!!
-            displayStatus();
         } else {
             std::cout << "\nTerk edildiğini sandığın gezegene geldiğinde yanıldığını anladın ve...\n\n";
             pirates();
         }
     }
 
-    void pirates() { //3 secenek kac savas pazarlık
+    void Spaceships::pirates(void) { //3 secenek kac savas pazarlık
         std::cout << "     _                      _______                      _\n"
                      "  _dMMMb._              .adOOOOOOOOOba.              _,dMMMb_\n"
                      " dP'  ~YMMb            dOOOOOOOOOOOOOOOb            aMMP~  `Yb\n"
@@ -92,7 +96,6 @@ public:
                      "     `'                  `OObNNNNNdOO'                   `'\n"
                      "                           `~OOOOO~'         ";
         if (fuel >= 33) {
-            displayStatus();
             std::cout << "\nUzay korsanlarıyla karşılaştın! Kaç (0), savaş (1) ya da pazarlık et (2)!\n";
             int choice{0};
             std::cin >> choice;
@@ -113,7 +116,6 @@ public:
 
             }
         } else if (fuel < 33) {
-            displayStatus();
             std::cout
                     << "\nUzay korsanlarıyla karşılaştın! Kaçmak için yeterli yakıtın yok. Savaş (1) ya da pazarlık et (2)!\n";
             int choice{1};
@@ -130,32 +132,48 @@ public:
                     pirates();
                     break;
             }
-        }
-    }
-
-    //ACTIONS
-    virtual void run() = 0;
-
-    virtual void fight() = 0;
-
-    void debate() {
-        if (money <= 0) {
-            std::cout << "Pazarlık etmek için cebinde beş kuruş olmadığını fark ettin.\n\n";
-            pirates();
-        } else {
-            loseMoney(money);
             displayStatus();
         }
     }
 
+    void Spaceships::debate(void) {
+        if (money <= 0) {
+            std::cout << "Pazarlık etmek için cebinde beş kuruş olmadığını fark ettin.\n\n";
+            pirates();
+        } else {
+            loseMoney();
+        }
+    }
+
     //DISPLAY
-    void displayStatus() const {
+    void Spaceships::displayStatus() const {
         std::cout << "Gemi sağlığı: " << health << " Depodaki yakıt: " << fuel << " Toplam altın: " << money << "\n";
     }
 
     //GAME ENDING
-    void puan_hesabi() {
+    void Spaceships::puan_hesabi() {
         std::cout << "Oyun sona erdi. Puanınız :" << ((fuel * 5) + (health * 10) + (money * 10));
     }
+    void Spaceships::run(void) {
+        int oddsOfFlee =  (rand() % 4) == 0&1&2 ? 10: 0;
+        if(oddsOfFlee>0) {
+            updateFuel();// hocam kacamasa bile yakit harcanir seklinde yaptik
+            std::cout<<"Yakıtın azaldı. Tam kaçabildiğini sandığın anda...\n\n";
+            pirates();
+        }
+        else {
+            updateFuel();
+            std::cout<<"Korsanlara izini kaybettirdin! Yakıtın azaldı.\n\n";
+        }
+    }
 
-};
+    void Spaceships::fight(void) {
+        int oddsOfWin = (rand() % 4) == 0&&1 ? 10 : 0;
+        if (oddsOfWin>0) {
+            std::cout<<"Savaşın galibi sensin!\n\n";
+        }
+        else {
+            std::cout<<"Savaşı kaybettin. 15 hasar aldın.\n\n";
+            GetDemage(15);
+        }
+    }

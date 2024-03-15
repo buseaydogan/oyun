@@ -1,5 +1,10 @@
-#ifndef UNTITLED_COMMONSHIP_H
-#define UNTITLED_COMMONSHIP_H
+#ifndef COMMON_SHIP_H
+#define COMMON_SHIP_H
 #include "spaceships.h"
+class commonShip:public Spaceships {
+public:
+    commonShip(): Spaceships(0.8){}
 
-#endif //UNTITLED_COMMONSHIP_H
+};
+
+#endif //SPEED_SHIP_H

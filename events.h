@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <memory>
 #include "spaceships.h"
 #include "commonship.h"
 #include "speedship.h"
@@ -15,6 +16,7 @@ public:
         int counter{0};
         int max_event{5};
         do {
+            playersShip()->displayStatus();
             int randomEvent = (rand() %3 + 1);
             switch(randomEvent){
                 case 1: //asteroid
@@ -32,6 +34,7 @@ public:
                 default:
                     break;
             }
+            playersShip()->displayStatus();
         } while(counter<max_event&&playersShip()->fuel>0);
         playersShip()->puan_hesabi();
     }
